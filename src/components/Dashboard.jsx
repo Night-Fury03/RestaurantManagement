@@ -1,62 +1,62 @@
-import React, { useState } from 'react';
-import Header from './shared/Header'
-import LineChart from './shared/LineChart';
-import PieChart from './shared/PieChart';
-import { Dropdown, Menu, Table, DatePicker, Tag, Button } from 'antd';
-import { DownloadOutlined, DownOutlined } from '@ant-design/icons';
-import moment from 'moment';
-import MostOrderedList from './shared/MostOrderedList';
+import React, { useState } from "react";
+import Header from "./shared/Header";
+import LineChart from "./shared/LineChart";
+import PieChart from "./shared/PieChart";
+import { Dropdown, Menu, Table, DatePicker, Tag, Button } from "antd";
+import { DownloadOutlined, DownOutlined } from "@ant-design/icons";
+import moment from "moment";
+import MostOrderedList from "./shared/MostOrderedList";
 
 const { RangePicker } = DatePicker;
 
 const initialData = [
   {
-    key: '1',
-    billId: 'B001',
-    menu: 'Pizza, Coke',
+    key: "1",
+    billId: "B001",
+    menu: "Pizza, Coke",
     totalPrice: 25,
-    type: 'Tại chỗ',
-    date: '2023-12-01',
+    type: "Tại chỗ",
+    date: "2023-12-01",
   },
   {
-    key: '2',
-    billId: 'B002',
-    menu: 'Burger, Fries, Sprite',
+    key: "2",
+    billId: "B002",
+    menu: "Burger, Fries, Sprite",
     totalPrice: 30,
-    type: 'Giao hàng',
-    date: '2023-12-02',
+    type: "Giao hàng",
+    date: "2023-12-02",
   },
   {
-    key: '3',
-    billId: 'B003',
-    menu: 'Pasta, Water',
+    key: "3",
+    billId: "B003",
+    menu: "Pasta, Water",
     totalPrice: 20,
-    type: 'Mang về',
-    date: '2023-12-03',
+    type: "Mang về",
+    date: "2023-12-03",
   },
   {
-    key: '4',
-    billId: 'B004',
-    menu: 'Steak, Wine',
+    key: "4",
+    billId: "B004",
+    menu: "Steak, Wine",
     totalPrice: 50,
-    type: 'Tại chỗ',
-    date: '2023-12-04',
+    type: "Tại chỗ",
+    date: "2023-12-04",
   },
   {
-    key: '5',
-    billId: 'B005',
-    menu: 'Steak, Wine',
+    key: "5",
+    billId: "B005",
+    menu: "Steak, Wine",
     totalPrice: 50,
-    type: 'Tại chỗ',
-    date: '2023-12-04',
+    type: "Tại chỗ",
+    date: "2023-12-04",
   },
   {
-    key: '6',
-    billId: 'B006',
-    menu: 'Steak, Wine',
+    key: "6",
+    billId: "B006",
+    menu: "Steak, Wine",
     totalPrice: 50,
-    type: 'Tại chỗ',
-    date: '2023-12-04',
+    type: "Tại chỗ",
+    date: "2023-12-04",
   },
 ];
 
@@ -67,40 +67,44 @@ const onChange = (date, dateString) => {
 export default function Dashboard() {
   const [filteredData, setFilteredData] = useState(initialData);
   const [dateRange, setDateRange] = useState(null);
-  const textData = [1, 2, 3, 4, 5]
-  const [filter, setFilter] = useState('Tất cả')
-
+  const textData = [1, 2, 3, 4, 5];
+  const [filter, setFilter] = useState("Tất cả");
 
   const columns = [
     {
-      title: 'Mã Bill',
-      dataIndex: 'billId',
-      key: 'billId',
+      title: "Mã Bill",
+      dataIndex: "billId",
+      key: "billId",
     },
     {
-      title: 'Menu',
-      dataIndex: 'menu',
-      key: 'menu',
+      title: "Menu",
+      dataIndex: "menu",
+      key: "menu",
     },
     {
-      title: 'Tổng Giá ($)',
-      dataIndex: 'totalPrice',
-      key: 'totalPrice',
+      title: "Tổng Giá ($)",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
       sorter: (a, b) => a.totalPrice - b.totalPrice, // Sort by total price
     },
     {
-      title: 'Loại Bill',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Loại Bill",
+      dataIndex: "type",
+      key: "type",
       render: (type) => {
-        let color = type === 'Tại chỗ' ? 'green' : type === 'Giao hàng' ? 'blue' : 'orange';
+        let color =
+          type === "Tại chỗ"
+            ? "green"
+            : type === "Giao hàng"
+            ? "blue"
+            : "orange";
         return <Tag color={color}>{type}</Tag>;
       },
     },
     {
-      title: 'Ngày',
-      dataIndex: 'date',
-      key: 'date',
+      title: "Ngày",
+      dataIndex: "date",
+      key: "date",
     },
   ];
 
@@ -108,7 +112,7 @@ export default function Dashboard() {
     if (dates) {
       const [start, end] = dates;
       const filtered = initialData.filter((item) =>
-        moment(item.date).isBetween(moment(start), moment(end), 'days', '[]')
+        moment(item.date).isBetween(moment(start), moment(end), "days", "[]")
       );
       setFilteredData(filtered);
       setDateRange(dates);
@@ -120,62 +124,51 @@ export default function Dashboard() {
 
   const mostOrderedFilter = (filterSetter) => (
     <Menu
-      className='min-w-24'
+      className="min-w-24"
       onClick={({ key }) => {
         filterSetter(key);
       }}
       items={[
-        { key: 'Tất cả', label: 'Tất cả' },
-        { key: 'Đồ ăn', label: 'Đồ ăn' },
-        { key: 'Thức uống', label: 'Thức uống' },
+        { key: "Tất cả", label: "Tất cả" },
+        { key: "Đồ ăn", label: "Đồ ăn" },
+        { key: "Thức uống", label: "Thức uống" },
       ]}
     />
   );
 
   return (
-    <div className='flex h-full'>
+    <div className="flex h-full">
       {/* content */}
-      <div className='relative flex flex-col flex-1 ml-4'>
-        <Header title={'Dashboard'} />
+      <div className="relative flex flex-col flex-1 ml-4">
+        <Header title={"Dashboard"} />
 
-        <div className='absolute right-0 top-4'>
-          <button class="relative flex items-center px-4 py-2 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group">
-            <span
-              class="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4"
-            >
-              <span
-                class="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
-              ></span>
+        <div className="absolute right-0 top-4">
+          <button className="relative flex items-center px-4 py-2 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group">
+            <span className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4">
+              <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
             </span>
-            <span
-              class="absolute bottom-0 rotate-180 left-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-ml-4 group-hover:-mb-4"
-            >
-              <span
-                class="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
-              ></span>
+            <span className="absolute bottom-0 rotate-180 left-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-ml-4 group-hover:-mb-4">
+              <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
             </span>
-            <span
-              class="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full bg-indigo-600 rounded-md group-hover:translate-x-0"
-            ></span>
-            <span
-              class="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-white"
-            ><DownloadOutlined /> In báo cáo</span>
+            <span className="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full bg-indigo-600 rounded-md group-hover:translate-x-0"></span>
+            <span className="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-white">
+              <DownloadOutlined /> In báo cáo
+            </span>
           </button>
         </div>
 
-
-        <div className='flex flex-col flex-1 pt-6 gap-y-6 overflow-y-auto scrollbar-none'>
-          <div className='rounded-lg bg-customDark1 p-4'>
+        <div className="flex flex-col flex-1 pt-6 gap-y-6 overflow-y-auto scrollbar-none">
+          <div className="rounded-lg bg-customDark1 p-4">
             <LineChart />
           </div>
 
-          <div className='flex-1 rounded-lg bg-customDark1 p-4'>
+          <div className="flex-1 rounded-lg bg-customDark1 p-4">
             <div className="flex mb-4 text-white justify-between items-center">
               <h2 className="text-xl font-semibold">Danh Sách Bills</h2>
               <RangePicker
                 onChange={handleDateFilter}
                 format="YYYY-MM-DD"
-                placeholder={['Bắt đầu', 'Kết thúc']}
+                placeholder={["Bắt đầu", "Kết thúc"]}
                 value={dateRange}
               />
             </div>
@@ -192,43 +185,41 @@ export default function Dashboard() {
       </div>
 
       {/* right sidebar */}
-      <div className='flex flex-col w-4/12 p-6 gap-y-6 justify-center'>
-        <div className='flex flex-col justify-between gap-y-2 p-4 bg-customDark1 rounded-lg max-h-[50%]'>
-          
-          <div className='flex justify-between items-center w-full pb-2 border-b border-customDarkLine'>
-            <h1 className='text-white'>Bán chạy nhất</h1>
-            <Dropdown overlay={mostOrderedFilter(setFilter)} trigger={['click']} placement="bottomRight">
+      <div className="flex flex-col w-4/12 p-6 gap-y-6 justify-center">
+        <div className="flex flex-col justify-between gap-y-2 p-4 bg-customDark1 rounded-lg max-h-[50%]">
+          <div className="flex justify-between items-center w-full pb-2 border-b border-customDarkLine">
+            <h1 className="text-white">Bán chạy nhất</h1>
+            <Dropdown
+              overlay={mostOrderedFilter(setFilter)}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
               <Button className="border border-customDarkLine bg-customDark1 hover:!bg-transparent  text-white">
                 {filter} <DownOutlined />
               </Button>
             </Dropdown>
           </div>
 
-          <div className='flex 1 overflow-hidden'>
+          <div className="flex 1 overflow-hidden">
             <MostOrderedList data={textData} />
           </div>
 
-          <Button className='w-full text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent transition-all duration-300'>xem tất cả</Button>
+          <Button className="w-full text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent transition-all duration-300">
+            xem tất cả
+          </Button>
         </div>
 
-        <div className='rounded-lg bg-customDark1'>
-          <div className='flex justify-between items-center w-full border-b border-customDarkLine p-4'>
-            <h1 className='text-white'>Tỷ lệ đơn hàng theo loại</h1>
+        <div className="rounded-lg bg-customDark1">
+          <div className="flex justify-between items-center w-full border-b border-customDarkLine p-4">
+            <h1 className="text-white">Tỷ lệ đơn hàng theo loại</h1>
             <DatePicker onChange={onChange} needConfirm />
           </div>
 
-          <div className=''
-            style={{ width: '200px', margin: '0 auto' }}
-          >
+          <div className="" style={{ width: "200px", margin: "0 auto" }}>
             <PieChart />
           </div>
-
         </div>
-
       </div>
     </div>
-
-
-  )
+  );
 }
-
