@@ -11,7 +11,7 @@ import axios from 'axios';
 
 
 const onChange = (key) => {
-    console.log(key);
+  console.log(key);
 };
 
 export default function Setting() {
@@ -54,15 +54,15 @@ export default function Setting() {
         form.resetFields();
     };
 
-    const onFinish = (values) => {
-        console.log('Form Values:', values);
-        // Có thể gửi dữ liệu lên server hoặc lưu vào state.
-    };
-    return (
-        <div className='flex h-full'>
-            {/* content */}
-            <div className='flex flex-col flex-1 mx-4 mt-4'>
-                <Header title={'Settings'} />
+  const onFinish = (values) => {
+    console.log("Form Values:", values);
+    // Có thể gửi dữ liệu lên server hoặc lưu vào state.
+  };
+  return (
+    <div className="flex h-full">
+      {/* content */}
+      <div className="flex flex-col flex-1 mx-4 mt-4">
+        <Header title={"Settings"} />
 
                 <Tabs tabPosition="left" defaultActiveKey="1" type="card" className="custom-tabs flex-1 py-4 gap-x-4" >
                     <Tabs.TabPane tab="Thông tin cá nhân" key="1" className='h-full pr-4 flex flex-col gap-y-6'>
@@ -163,9 +163,19 @@ export default function Setting() {
                             <h1 className='text-white text-2xl font-semibold'>Quản lý bàn</h1>
                         </div>
 
-                        <TablesList data={products} />
-                    </Tabs.TabPane>
-                </Tabs>
+            <div className="flex justify-between items-center mb-2">
+              <Button className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
+                Thêm phân loại mới
+              </Button>
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab="Quản lí bàn"
+            key="4"
+            className="h-full flex flex-col gap-y-6"
+          >
+            <div className="flex justify-between items-center mt-2 pr-4">
+              <h1 className="text-white text-2xl font-semibold">Quản lý bàn</h1>
             </div>
 
             <Modal
