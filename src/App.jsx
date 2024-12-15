@@ -6,23 +6,26 @@ import Tables from "./components/Tables";
 import Orders from "./components/Orders";
 import History from "./components/History";
 import Setting from "./components/Setting";
-import { ConfigProvider } from 'antd';
+import { ConfigProvider } from "antd";
+import Login from "./components/Login";
+import { useState } from "react";
 
 const theme = {
   token: {
-    colorPrimary: '#EA7C69',
+    colorPrimary: "#EA7C69",
     borderRadius: 8,
-    colorText: '#333333',
-    colorErrorBg: '#1e1e2d',
+    colorText: "#333333",
+    colorErrorBg: "#1e1e2d",
   },
 };
 
 function App() {
-  return (
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  return isLoggedIn ? (
     <ConfigProvider theme={theme}>
       <Router>
         <Routes>
-          <Route path='/' element={<Layout />}>
+          <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="Products" element={<Products />} />
             <Route path="Tables" element={<Tables />} />
@@ -33,6 +36,8 @@ function App() {
         </Routes>
       </Router>
     </ConfigProvider>
+  ) : (
+    <Login setIsLoggedIn={setIsLoggedIn} />
   );
 }
 
