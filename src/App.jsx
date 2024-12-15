@@ -25,7 +25,7 @@ function App() {
     <ConfigProvider theme={theme}>
       <Router>
         <Routes>
-          <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Layout setIsLoggedIn={setIsLoggedIn} />}>
             <Route index element={<Dashboard />} />
             <Route path="Products" element={<Products />} />
             <Route path="Tables" element={<Tables />} />
