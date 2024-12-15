@@ -1,34 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Header from './shared/Header'
 import ProductsList from './shared/ProductsList'
-import ItemsList from './shared/ItemsList'
-import { Dropdown, Menu, Tabs, Input, Button, Drawer, Form, Upload } from 'antd';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { Dropdown, Menu, Button } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
-
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
-
 export default function Products() {
-  const [products, setProducts] = useState([1, 2, 3, 4, 5, 6])
+  const [products, setProducts] = useState([])
   const [foodFilter, setFoodFilter] = useState('Tất cả')
-  const [drinkFilter, setDrinkFilter] = useState('Tất cả')
   const [foodCategories, setFoodCategories] = useState([])
-  const [foodFilterSidebar, setFoodFilterSidebar] = useState('Tất cả')
-  const [drinkFilterSidebar, setDrinkFilterSidebar] = useState('Tất cả')
-
-  // State để quản lý Drawer
-  const [drawerVisible, setDrawerVisible] = useState(false);
-
 
   useEffect(() => {
-    // const agent = new https.Agent({ rejectUnauthorized: false });
-    async function test() {
+    async function getCategoriesApi() {
       let a = await axios.get("https://localhost:7215/food/categories")
       a = a.data;
       let foodCategories = [];
@@ -41,45 +24,17 @@ export default function Products() {
 
       });
       setFoodCategories(foodCategories)
-      console.log(a)
     }
 
-    // fetch("https://localhost:7215/food/categories").then(response => response.json()).then(data => console.log(data));
+    async function getFoodApi() {
+      let a = await axios.get("https://localhost:7215/food")
+      setProducts(a.data)
+      console.log(a.data)
+    }
 
-    test()
-    // return () => {};
+    getCategoriesApi()
+    getFoodApi()
   }, [])
-
-  // Hàm mở Drawer
-  const showDrawer = () => {
-    setDrawerVisible(true);
-  };
-
-  // Hàm đóng Drawer
-  const closeDrawer = () => {
-    setDrawerVisible(false);
-  };
-
-  // Hàm xử lý khi submit Form trong Drawer
-  const onFinish = (values) => {
-    console.log('Form Values:', values);
-    // Có thể gửi dữ liệu lên server hoặc lưu vào state.
-    setDrawerVisible(false); // Đóng Drawer sau khi submit
-  };
-
-  const drinkMenu = (filterSetter) => (
-    <Menu
-      className='min-w-24'
-      onClick={({ key }) => {
-        filterSetter(key);
-      }}
-      items={[
-        { key: 'Tất cả', label: 'Tất cả' },
-        { key: 'Nước giải khát', label: 'Nước giải khát' },
-        { key: 'Nước ép', label: 'Nước ép' },
-      ]}
-    />
-  );
 
   const foodMenu = (filterSetter) => (
     <Menu
