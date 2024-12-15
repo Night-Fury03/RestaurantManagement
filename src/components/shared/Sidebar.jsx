@@ -28,9 +28,9 @@ export default function Sidebar() {
         ))}
       </div>
       <div className="flex flex-col items-center gap-0.5 pt-2 border-t border-neutral-700">
-        {/* {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((link) => (
+        {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((link) => (
           <SidebarLink key={link.key} link={link} />
-        ))} */}
+        ))}
         <div className={classNames(linkClass, 'cursor-pointer text-red-500')}>
           <span className="text-xl">
             <HiOutlineLogout />

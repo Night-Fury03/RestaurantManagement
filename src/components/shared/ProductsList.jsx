@@ -7,7 +7,7 @@ export default function ProductsList({ data }) {
     const price = '$2.5'
 
     return (
-        <div className='flex flex-row flex-wrap w-full gap-7 justify-center'>
+        <div className='flex flex-row flex-wrap w-full gap-7'>
 
             {data.map((item, index) => (
                 <div key={index} className='w-48 bg-customDark1 h-56 rounded-2xl items-center mb-7'>

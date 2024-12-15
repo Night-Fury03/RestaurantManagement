@@ -19,24 +19,24 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		path: '/products',
 		icon: <IoFastFoodOutline />
 	},
-	{
-		key: 'tables',
-		label: 'Tables',
-		path: '/tables',
-		icon: <MdOutlineTableRestaurant />
-	},
+	// {
+	// 	key: 'tables',
+	// 	label: 'Tables',
+	// 	path: '/tables',
+	// 	icon: <MdOutlineTableRestaurant />
+	// },
 	{
 		key: 'orders',
 		label: 'Orders',
 		path: '/orders',
 		icon: <FaConciergeBell />
 	},
-	// {
-	// 	key: 'history',
-	// 	label: 'History',
-	// 	path: '/history',
-	// 	icon: <MdOutlineHistory />
-	// },
+	{
+		key: 'history',
+		label: 'History',
+		path: '/history',
+		icon: <MdOutlineHistory />
+	},
 ]
 
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [

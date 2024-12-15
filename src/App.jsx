@@ -5,6 +5,7 @@ import Products from "./components/Products";
 import Tables from "./components/Tables";
 import Orders from "./components/Orders";
 import History from "./components/History";
+import Setting from "./components/Setting";
 import { ConfigProvider } from 'antd';
 
 const theme = {
@@ -27,6 +28,7 @@ function App() {
             <Route path="Tables" element={<Tables />} />
             <Route path="Orders" element={<Orders />} />
             <Route path="History" element={<History />} />
+            <Route path="Settings" element={<Setting />} />
           </Route>
         </Routes>
       </Router>

@@ -24,6 +24,8 @@ module.exports = {
         customGreen: '#6BE2BE',
         customWhite_5: 'color-mix(in srgb, var(--color-white, #000) 50%, transparent)',
         customWhite_10: 'color-mix(in srgb, var(--color-white, #fff) 10%, transparent)',
+        customPrimaryOpacity: 'rgba(234, 124, 105, 0.26)',
+        customPrimaryOpacity_50: 'rgba(234, 124, 105, 0.5)'
       }
     },
   },
