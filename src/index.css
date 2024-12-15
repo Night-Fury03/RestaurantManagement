@@ -9,19 +9,57 @@
 		font-family: 'Inter', sans-serif;
 		line-height: 1.3;
 	}
-	table {
-	}
+
+	table {}
+
 	th,
 	td {
 		@apply py-3 px-2.5 text-sm text-left border-y border-gray-200;
 	}
+
 	thead {
 		@apply bg-neutral-100;
 	}
+
 	th {
 		@apply font-semibold;
 	}
+
 	a {
 		@apply text-sky-500 hover:underline;
 	}
+}
+
+.custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+	@apply text-customPrimary font-bold;
+	/* Tailwind utilities */
+}
+
+.custom-tabs .ant-tabs-tab.ant-tabs-tab-active {
+	@apply font-bold bg-customPrimaryOpacity;
+	/* Tailwind utilities */
+}
+
+.custom-tabs .ant-tabs-tab {
+	@apply !border-none
+}
+
+.custom-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+	@apply text-white min-w-40 min-h-12 text-center content-center;
+}
+
+/* .custom-tabs .ant-tabs-card>.ant-tabs-nav .ant-tabs-tab {
+	@apply text-white font-medium hover:text-customPrimary transition-all duration-200;
+} */
+
+.custom-tabs .ant-tabs-nav {
+	@apply bg-customDark1 rounded-lg border-none;
+}
+
+.custom-tabs .ant-tabs-content-holder {
+	@apply bg-customDark1 rounded-lg border-none;
+}
+
+.custom-tabs .ant-tabs-content-holder .ant-tabs-content {
+	@apply flex-1
 }
