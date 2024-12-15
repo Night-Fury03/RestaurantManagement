@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './shared/Header'
 import backgroundImage from '../assets/img/CanhCa.jpg'
-import { Dropdown, Menu, Tabs, Input, Button, Form } from 'antd';
+import { Modal, Table, Tabs, Input, Button, Form, Popconfirm } from 'antd';
+import { DeleteOutlined, PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import ItemsList from './shared/ItemsList';
 import TablesList from './shared/TablesList';
+import axios from 'axios';
+
 
 
 
@@ -13,6 +16,43 @@ const onChange = (key) => {
 
 export default function Setting() {
     const [products, setProducts] = useState([1, 2, 3, 4, 5, 6])
+    const [typeBtn, setTypeBtn] = useState(null)
+    const [categories, setCategories] = useState([])
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        async function test() {
+            let a = await axios.get("https://localhost:7215/food/categories")
+            setCategories(a.data)
+        }
+
+
+        test()
+    }, [])
+
+    const showModal = (type) => {
+        setTypeBtn(type)
+        setModalVisible(true);
+    };
+
+    const handleOk = () => {
+        form.validateFields()
+            .then(values => {
+                console.log('Form values:', values);
+                setModalVisible(false);
+                form.resetFields();
+            })
+            .catch(error => {
+                console.error('Validation failed:', error);
+            });
+    };
+
+    const handleCancel = () => {
+        setModalVisible(false);
+        form.resetFields();
+    };
 
     const onFinish = (values) => {
         console.log('Form Values:', values);
@@ -25,7 +65,7 @@ export default function Setting() {
                 <Header title={'Settings'} />
 
                 <Tabs tabPosition="left" defaultActiveKey="1" type="card" className="custom-tabs flex-1 py-4 gap-x-4" >
-                    <Tabs.TabPane tab="Thông tin cá nhân" key="1" className='h-full flex flex-col gap-y-6'>
+                    <Tabs.TabPane tab="Thông tin cá nhân" key="1" className='h-full pr-4 flex flex-col gap-y-6'>
                         <h1 className='text-white text-2xl font-semibold pt-4'>Thông tin tài khoản</h1>
 
                         <div className='flex-1 flex flex-row'>
@@ -54,7 +94,28 @@ export default function Setting() {
                             </div>
                         </div>
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Quản lí thực đơn" key="2" className='h-full flex flex-col gap-y-6'>
+                    <Tabs.TabPane tab="Quản lí tài khoản" key="2" className='h-full pr-4 flex flex-col gap-y-6'>
+                        <h1 className='text-white text-2xl font-semibold pt-4'>Danh sách tài khoản</h1>
+
+                        <Table
+                            columns={[
+                                { title: 'Tên tài khoản', dataIndex: 'username', key: 'username' },
+                                { title: 'Tên đại diện', dataIndex: 'displayname', key: 'displayname' },
+                                { title: 'Mật khẩu', dataIndex: 'password', key: 'password' },
+                            ]}
+                            dataSource={initialData}
+                            bordered
+                            pagination={{ pageSize: 5 }}
+                            scroll={{ y: "300px" }} // Enable dynamic scrolling
+                        />
+
+                        <div className='flex justify-end items-center mb-2'>
+                            <Button onClick={() => showModal("addAccount")} className='transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]'>
+                                Thêm tài khoản mới
+                            </Button>
+                        </div>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="Quản lí thực đơn" key="3" className='h-full pr-4 flex flex-col gap-y-6'>
                         <div className='flex justify-between items-center mt-2 pr-4'>
                             <h1 className='text-white text-2xl font-semibold'>Products Management</h1>
                             <div class="relative group rounded-lg w-56 overflow-hidden">
@@ -91,13 +152,13 @@ export default function Setting() {
 
                         <ItemsList data={products} />
 
-                        <div className='flex justify-between items-center mb-2'>
-                            <Button className='transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]'>
-                                Thêm phân loại mới
+                        <div className='flex justify-end items-center mb-2'>
+                            <Button onClick={() => showModal("editCategory")} className='transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]'>
+                                Tùy chỉnh phân loại
                             </Button>
                         </div>
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Quản lí bàn" key="4" className='h-full flex flex-col gap-y-6'>
+                    <Tabs.TabPane tab="Quản lí bàn" key="4" className='h-full pr-4 flex flex-col gap-y-6'>
                         <div className='flex justify-between items-center mt-2 pr-4'>
                             <h1 className='text-white text-2xl font-semibold'>Quản lý bàn</h1>
                         </div>
@@ -106,6 +167,124 @@ export default function Setting() {
                     </Tabs.TabPane>
                 </Tabs>
             </div>
+
+            <Modal
+                title={typeBtn === "editCategory" ? "Tùy chỉnh phân loại" : "Thêm tài khoản mới"}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                open={modalVisible}
+                okText="Xác nhận"
+                cancelText="Hủy"
+            >
+                {
+                    typeBtn === "editCategory" ? (
+                        <div>
+                            <h3>Danh sách phân loại:</h3>
+                            <div className="flex flex-col gap-y-2 max-h-[400px] scrollbar-none overflow-y-scroll">
+                                {
+                                    categories.map((category, index) => (
+                                        <div key={index} className="flex justify-between items-center border-b border-gray-300 py-2">
+                                            <span>{category.name}</span>
+                                            <Popconfirm
+                                                title="Bạn có chắc muốn xóa danh mục này không?"
+                                                okText="Xác nhận"
+                                                cancelText="Hủy"
+                                                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                                            >
+                                                <Button type="text" danger icon={<DeleteOutlined />} />
+                                            </Popconfirm>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                            <Form layout="inline" className="mt-4" onFinish={onFinish}>
+                                <Form.Item
+                                    name="newCategory"
+                                    rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}
+                                >
+                                    <Input placeholder="Nhập danh mục mới" />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit">
+                                        Thêm danh mục
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </div>
+                    ) : (
+                        <Form layout="vertical" onFinish={onFinish}>
+                            <Form.Item
+                                label="Tên tài khoản"
+                                name="userName"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên tài khoản!' }]}
+                            >
+                                <Input placeholder="Nhập tên tài khoản" />
+                            </Form.Item>
+                            <Form.Item
+                                label="Tên đại diện"
+                                name="displayName"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên đại diện!' }]}
+                            >
+                                <Input placeholder="Nhập tên đại diện" />
+                            </Form.Item>
+                            <Form.Item
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                            >
+                                <Input placeholder="Nhập mật khẩu" />
+                            </Form.Item>
+                        </Form>
+                    )
+                }
+            </Modal>
         </div>
     )
 }
+
+const initialData = [
+    {
+        key: '1',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+    {
+        key: '2',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+    {
+        key: '3',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+    {
+        key: '4',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+    {
+        key: '5',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+    {
+        key: '6',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+    {
+        key: '7',
+        username: 'Đạt',
+        displayname: 'Đạt 1 phít',
+        password: "*********",
+    },
+
+];

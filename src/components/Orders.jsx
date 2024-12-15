@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './shared/Header'
 import { Modal, Form, Select, Button, InputNumber, Table as AntTable } from 'antd';
 import clsx from 'clsx';
+import axios from 'axios';
+
 
 const { Option } = Select;
 
@@ -91,8 +93,19 @@ export default function Orders() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [total, setTotal] = useState(0);
     const [currentTable, setCurrentTable] = useState(null); // Thông tin bàn được chọn
+    const [tables, setTables] = useState([])
 
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        async function test() {
+            let a = await axios.get("https://localhost:7215/TableFood")
+            setTables(a.data)
+            console.log(a.data)
+        }
+
+        test()
+    }, [])
 
     const showModal = (table) => {
         setCurrentTable(table); // Lưu thông tin bàn đang được chọn
@@ -149,19 +162,24 @@ export default function Orders() {
 
                 <div className='flex-1 flex flex-wrap p-4 gap-4 scrollbar-none overflow-y-scroll'>
                     {
-                        orders.map((order, index) => (
-                            <div key={index} onClick={() => showModal(order)} class='flex flex-col items-center justify-center min-w-56 p-4 bg-white gap-y-2 rounded transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.8)] hover:scale-105 cursor-pointer'>
-                                <div className='flex-1 pb-2 flex justify-center items-center w-full border-b border-customDarkLine '>
-                                    <h1>{order.name}</h1>
-                                </div>
-                                <div className='flex justify-between text-xs w-full gap-x-2 '>
-                                    <span>11:59</span>
-                                    <span className={clsx(
-                                        order.status === 'Đang hoạt động' ? 'text-customGreen' : order.status === 'Chờ thanh toán' ? 'text-customOrange' : 'text-neutral-400'
-                                    )}>{order.status}</span>
-                                </div>
+                        orders.length === 0 ?
+                            <div className='flex-1 content-center'>
+                                <h1 className='text-neutral-600 text-xl text-center'>Chưa có bàn nào</h1>
                             </div>
-                        ))
+                            :
+                            orders.map((table, index) => (
+                                <div key={index} onClick={() => showModal(table)} class='flex flex-col items-center justify-center min-w-56 p-4 bg-white gap-y-2 rounded transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.8)] hover:scale-105 cursor-pointer'>
+                                    <div className='flex-1 pb-2 flex justify-center items-center w-full border-b border-customDarkLine '>
+                                        <h1>{table.name}</h1>
+                                    </div>
+                                    <div className='flex justify-between text-xs w-full gap-x-2 '>
+                                        <span>11:59</span>
+                                        <span className={clsx(
+                                            table.status === 'Đang hoạt động' ? 'text-customGreen' : table.status === 'Chờ thanh toán' ? 'text-customOrange' : 'text-neutral-400'
+                                        )}>{table.status}</span>
+                                    </div>
+                                </div>
+                            ))
                     }
 
                 </div>
