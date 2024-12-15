@@ -4,14 +4,13 @@ import backgroundImage from '../assets/img/CanhCa.jpg'
 import { Modal, Table, Tabs, Input, Button, Form, Popconfirm } from 'antd';
 import { DeleteOutlined, PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import ItemsList from './shared/ItemsList';
-import TablesList from './shared/TablesList';
 import axios from 'axios';
 
 
 
 
 const onChange = (key) => {
-  console.log(key);
+    console.log(key);
 };
 
 export default function Setting() {
@@ -54,15 +53,15 @@ export default function Setting() {
         form.resetFields();
     };
 
-  const onFinish = (values) => {
-    console.log("Form Values:", values);
-    // Có thể gửi dữ liệu lên server hoặc lưu vào state.
-  };
-  return (
-    <div className="flex h-full">
-      {/* content */}
-      <div className="flex flex-col flex-1 mx-4 mt-4">
-        <Header title={"Settings"} />
+    const onFinish = (values) => {
+        console.log("Form Values:", values);
+        // Có thể gửi dữ liệu lên server hoặc lưu vào state.
+    };
+    return (
+        <div className="flex h-full">
+            {/* content */}
+            <div className="flex flex-col flex-1 mx-4 mt-4">
+                <Header title={"Settings"} />
 
                 <Tabs tabPosition="left" defaultActiveKey="1" type="card" className="custom-tabs flex-1 py-4 gap-x-4" >
                     <Tabs.TabPane tab="Thông tin cá nhân" key="1" className='h-full pr-4 flex flex-col gap-y-6'>
@@ -163,92 +162,95 @@ export default function Setting() {
                             <h1 className='text-white text-2xl font-semibold'>Quản lý bàn</h1>
                         </div>
 
-            <div className="flex justify-between items-center mb-2">
-              <Button className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
-                Thêm phân loại mới
-              </Button>
-            </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab="Quản lí bàn"
-            key="4"
-            className="h-full flex flex-col gap-y-6"
-          >
-            <div className="flex justify-between items-center mt-2 pr-4">
-              <h1 className="text-white text-2xl font-semibold">Quản lý bàn</h1>
-            </div>
-
-            <Modal
-                title={typeBtn === "editCategory" ? "Tùy chỉnh phân loại" : "Thêm tài khoản mới"}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                open={modalVisible}
-                okText="Xác nhận"
-                cancelText="Hủy"
-            >
-                {
-                    typeBtn === "editCategory" ? (
-                        <div>
-                            <h3>Danh sách phân loại:</h3>
-                            <div className="flex flex-col gap-y-2 max-h-[400px] scrollbar-none overflow-y-scroll">
-                                {
-                                    categories.map((category, index) => (
-                                        <div key={index} className="flex justify-between items-center border-b border-gray-300 py-2">
-                                            <span>{category.name}</span>
-                                            <Popconfirm
-                                                title="Bạn có chắc muốn xóa danh mục này không?"
-                                                okText="Xác nhận"
-                                                cancelText="Hủy"
-                                                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                                            >
-                                                <Button type="text" danger icon={<DeleteOutlined />} />
-                                            </Popconfirm>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-
-                            <Form layout="inline" className="mt-4" onFinish={onFinish}>
-                                <Form.Item
-                                    name="newCategory"
-                                    rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}
-                                >
-                                    <Input placeholder="Nhập danh mục mới" />
-                                </Form.Item>
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        Thêm danh mục
-                                    </Button>
-                                </Form.Item>
-                            </Form>
+                        <div className="flex justify-between items-center mb-2">
+                            <Button className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
+                                Thêm phân loại mới
+                            </Button>
                         </div>
-                    ) : (
-                        <Form layout="vertical" onFinish={onFinish}>
-                            <Form.Item
-                                label="Tên tài khoản"
-                                name="userName"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên tài khoản!' }]}
-                            >
-                                <Input placeholder="Nhập tên tài khoản" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Tên đại diện"
-                                name="displayName"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên đại diện!' }]}
-                            >
-                                <Input placeholder="Nhập tên đại diện" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Mật khẩu"
-                                name="password"
-                                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-                            >
-                                <Input placeholder="Nhập mật khẩu" />
-                            </Form.Item>
-                        </Form>
-                    )
-                }
-            </Modal>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane
+                        tab="Quản lí bàn"
+                        key="4"
+                        className="h-full flex flex-col gap-y-6"
+                    >
+                        <div className="flex justify-between items-center mt-2 pr-4">
+                            <h1 className="text-white text-2xl font-semibold">Quản lý bàn</h1>
+                        </div>
+
+                        <Modal
+                            title={typeBtn === "editCategory" ? "Tùy chỉnh phân loại" : "Thêm tài khoản mới"}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                            open={modalVisible}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                        >
+                            {
+                                typeBtn === "editCategory" ? (
+                                    <div>
+                                        <h3>Danh sách phân loại:</h3>
+                                        <div className="flex flex-col gap-y-2 max-h-[400px] scrollbar-none overflow-y-scroll">
+                                            {
+                                                categories.map((category, index) => (
+                                                    <div key={index} className="flex justify-between items-center border-b border-gray-300 py-2">
+                                                        <span>{category.name}</span>
+                                                        <Popconfirm
+                                                            title="Bạn có chắc muốn xóa danh mục này không?"
+                                                            okText="Xác nhận"
+                                                            cancelText="Hủy"
+                                                            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                                                        >
+                                                            <Button type="text" danger icon={<DeleteOutlined />} />
+                                                        </Popconfirm>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+
+                                        <Form layout="inline" className="mt-4" onFinish={onFinish}>
+                                            <Form.Item
+                                                name="newCategory"
+                                                rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}
+                                            >
+                                                <Input placeholder="Nhập danh mục mới" />
+                                            </Form.Item>
+                                            <Form.Item>
+                                                <Button type="primary" htmlType="submit">
+                                                    Thêm danh mục
+                                                </Button>
+                                            </Form.Item>
+                                        </Form>
+                                    </div>
+                                ) : (
+                                    <Form layout="vertical" onFinish={onFinish}>
+                                        <Form.Item
+                                            label="Tên tài khoản"
+                                            name="userName"
+                                            rules={[{ required: true, message: 'Vui lòng nhập tên tài khoản!' }]}
+                                        >
+                                            <Input placeholder="Nhập tên tài khoản" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Tên đại diện"
+                                            name="displayName"
+                                            rules={[{ required: true, message: 'Vui lòng nhập tên đại diện!' }]}
+                                        >
+                                            <Input placeholder="Nhập tên đại diện" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Mật khẩu"
+                                            name="password"
+                                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                                        >
+                                            <Input placeholder="Nhập mật khẩu" />
+                                        </Form.Item>
+                                    </Form>
+                                )
+                            }
+                        </Modal>
+                    </Tabs.TabPane>
+                </Tabs>
+            </div>
         </div>
     )
 }
