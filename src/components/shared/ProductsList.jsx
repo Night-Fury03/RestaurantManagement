@@ -9,7 +9,7 @@ export default function ProductsList({ data }) {
         return (
           <div
             key={item.id}
-            className="w-48 bg-customDark1 h-56 rounded-2xl items-center mb-7"
+            className="w-48 bg-customDark1 h-56 rounded-2xl items-center mb-7 cursor-pointer hover:-translate-y-3 transition-all hover:border-2 hover:border-orange-400 active:border-white"
           >
             <div className="relative w-full flex h-1/2 justify-center">
               <div
