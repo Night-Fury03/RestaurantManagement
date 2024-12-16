@@ -5,12 +5,14 @@ import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
 export default function TablesList({ data }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [typeModal, setTypeModal] = useState('')
+    const [currentTable, setCurrentTable] = useState('')
 
 
     const [form] = Form.useForm();
 
-    const showModal = (type) => {
+    const showModal = (type, item) => {
         setTypeModal(type)
+        setCurrentTable(item)
         setIsModalOpen(true);
     };
 
@@ -31,20 +33,20 @@ export default function TablesList({ data }) {
         form.resetFields();
     };
 
-    const popover = (
-        <div className='flex justify-between gap-x-4'>
-            <Button onClick={() => showModal('edit')} className='flex-1 text-customSecondary bg-transparent border border-customSecondary hover:!text-customSecondary hover:!border-customSecondary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegEdit /></Button>
-            <Button onClick={() => showModal('remove')} className='flex-1 text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegTrashAlt /></Button>
-        </div>
-    );
-
     return (
         <div className={`flex flex-col w-full p-4 gap-y-8`}>
             <div className='flex flex-row flex-wrap gap-7 '>
                 {data.map((item, index) => (
-                    <Popover content={popover} title="Tùy chọn">
+                    <Popover
+                        content={
+                            <div className='flex justify-between gap-x-4'>
+                                <Button onClick={() => showModal('edit', item)} className='flex-1 text-customSecondary bg-transparent border border-customSecondary hover:!text-customSecondary hover:!border-customSecondary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegEdit /></Button>
+                                <Button onClick={() => showModal('remove', item)} className='flex-1 text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegTrashAlt /></Button>
+                            </div>
+                        }
+                        title="Tùy chọn">
                         <div key={index} className={`flex items-center justify-center w-24 h-12 bg-customSecondary clip-trapezoid hover:scale-110 transition-all duration-300 cursor-pointer`}>
-                            <span className="text-white">A12</span>
+                            <span className="text-white">{item.name}</span>
                         </div>
                     </Popover>
                 ))}
@@ -94,7 +96,7 @@ export default function TablesList({ data }) {
                                 >
                                     <Input
                                         disabled
-                                        value="13"
+                                        value={currentTable.name}
                                     />
                                 </Form.Item>
 
@@ -104,7 +106,7 @@ export default function TablesList({ data }) {
                                     rules={[{ required: true, message: 'Vui lòng nhập!' }]}
                                 >
                                     <Input
-                                        placeholder="vd: 13"
+                                        placeholder="vd: Bàn 123"
                                     />
                                 </Form.Item>
                             </>

@@ -75,12 +75,12 @@ export default function ItemsList({ data }) {
               style={{
                 width: "127px",
                 height: "127px",
-                backgroundImage: `url(${backgroundImage})`,
+                backgroundImage: `url(${item.imageLink})`,
               }}
             ></div>
             <div className="flex flex-col pt-2 gap-y-1 justify-center items-center">
-              <span className="text-white">{name}</span>
-              <span className="text-neutral-400 text-sm">{price}</span>
+              <span className="text-white">{item.name}</span>
+              <span className="text-neutral-400 text-sm">{item.price}</span>
             </div>
           </div>
           <Popconfirm
