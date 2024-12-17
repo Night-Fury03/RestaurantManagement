@@ -20,7 +20,9 @@ const theme = {
 };
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn")
+  );
   return isLoggedIn ? (
     <ConfigProvider theme={theme}>
       <Router>
