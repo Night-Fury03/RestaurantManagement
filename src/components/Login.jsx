@@ -4,6 +4,7 @@ import axios from "axios";
 
 function Login({ setIsLoggedIn }) {
   const [errorVisible, setErrorVisible] = useState(false);
+
   async function handleFormSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -15,6 +16,7 @@ function Login({ setIsLoggedIn }) {
       if (res.status === 200) {
         setIsLoggedIn(true);
         setErrorVisible(false); // Ensure error is not visible on success
+        localStorage.setItem("isLoggedIn", true);
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {

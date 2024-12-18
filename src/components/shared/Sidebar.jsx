@@ -35,7 +35,10 @@ export default function Sidebar({ setIsLoggedIn }) {
         ))}
         <div
           className={classNames(linkClass, "cursor-pointer text-red-500")}
-          onClick={() => setIsLoggedIn(false)}
+          onClick={() => {
+            setIsLoggedIn(false);
+            localStorage.removeItem("isLoggedIn");
+          }}
         >
           <span className="text-xl">
             <HiOutlineLogout />
