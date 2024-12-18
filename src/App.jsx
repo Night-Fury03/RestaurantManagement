@@ -9,7 +9,7 @@ import Setting from "./components/Setting";
 import { ConfigProvider } from "antd";
 import Login from "./components/Login";
 import { useState } from "react";
-
+import { Context } from "./components/shared/Context";
 const theme = {
   token: {
     colorPrimary: "#EA7C69",
@@ -23,23 +23,30 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem("isLoggedIn")
   );
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin"));
+  const values = { setIsLoggedIn, isAdmin, setIsAdmin };
+
   return isLoggedIn ? (
-    <ConfigProvider theme={theme}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout setIsLoggedIn={setIsLoggedIn} />}>
-            <Route index element={<Dashboard />} />
-            <Route path="Products" element={<Products />} />
-            <Route path="Tables" element={<Tables />} />
-            <Route path="Orders" element={<Orders />} />
-            <Route path="History" element={<History />} />
-            <Route path="Settings" element={<Setting />} />
-          </Route>
-        </Routes>
-      </Router>
-    </ConfigProvider>
+    <Context.Provider value={values}>
+      <ConfigProvider theme={theme}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="Products" element={<Products />} />
+              <Route path="Tables" element={<Tables />} />
+              <Route path="Orders" element={<Orders />} />
+              <Route path="History" element={<History />} />
+              <Route path="Settings" element={<Setting />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ConfigProvider>
+    </Context.Provider>
   ) : (
-    <Login setIsLoggedIn={setIsLoggedIn} />
+    <Context.Provider value={values}>
+      <Login />
+    </Context.Provider>
   );
 }
 

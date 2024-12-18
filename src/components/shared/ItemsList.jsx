@@ -15,18 +15,19 @@ export default function ItemsList() {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [foodCategories, setFoodCategories] = useState([]);
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
   const [idEdit, setIdEdit] = useState(undefined);
-
 
   useEffect(() => {
     getFoodCategoriesApi();
-    getFoodApi()
+    getFoodApi();
   }, []);
 
   const getFoodCategoriesApi = async () => {
     try {
-      const response = await axios.get("https://localhost:7215/food/categories");
+      const response = await axios.get(
+        "https://localhost:7215/food/categories"
+      );
       setFoodCategories(response.data);
     } catch (error) {
       console.error("Error fetching bills:", error);
@@ -42,8 +43,6 @@ export default function ItemsList() {
     }
   };
 
-
-
   const showModal = () => {
     setModalVisible(true);
   };
@@ -58,7 +57,7 @@ export default function ItemsList() {
     form
       .validateFields()
       .then(async (values) => {
-        console.log(values)
+        console.log(values);
         try {
           // Gửi dữ liệu lên server
           await axios.post("https://localhost:7215/Food", values, {
@@ -85,17 +84,25 @@ export default function ItemsList() {
     form.resetFields();
   };
 
-
   const handleOkEdit = (item) => {
     formEdit
       .validateFields()
       .then(async (values) => {
-        console.log("FORM VALUE IS " + values)
+        console.log("FORM VALUE IS " + values);
         try {
           // Gửi dữ liệu lên server
-          await axios.put(`https://localhost:7215/Food/${idEdit}`, { id: idEdit, isHidden: item.isHidden, categoryName: item.categoryName, ...values }, {
-            headers: { "Content-Type": "application/json" },
-          });
+          await axios.put(
+            `https://localhost:7215/Food/${idEdit}`,
+            {
+              id: idEdit,
+              isHidden: item.isHidden,
+              categoryName: item.categoryName,
+              ...values,
+            },
+            {
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
           // Cập nhật lại danh sách
           await getFoodCategoriesApi();
@@ -118,7 +125,7 @@ export default function ItemsList() {
   };
 
   return (
-    <div className="flex-1 flex flex-row flex-wrap w-full py-2 gap-6 max-h-[400px] overflow-y-scroll scrollbar-none">
+    <div className="flex-1 flex flex-row flex-wrap w-full py-2 gap-6 h-full overflow-y-scroll scrollbar-none">
       <div>
         <Button
           onClick={showModal}
@@ -160,8 +167,8 @@ export default function ItemsList() {
                 />
               }
               onConfirm={async () => {
-                await axios.delete(`https://localhost:7215/Food/${item.id}`)
-                getFoodApi()
+                await axios.delete(`https://localhost:7215/Food/${item.id}`);
+                getFoodApi();
               }}
               okText="Xác nhận"
               cancelText="Hủy"
@@ -170,7 +177,13 @@ export default function ItemsList() {
                 <DeleteOutlined /> Xóa
               </Button>
             </Popconfirm>
-            <Button onClick={() => showModalEdit(item)} className="w-1/2 py-6 rounded-br-2xl rounded-t-none border-none hover:!text-white hover:!bg-customSecondary bg-customSecondary text-white font-semibold"> <EditOutlined /> Sửa</Button>
+            <Button
+              onClick={() => showModalEdit(item)}
+              className="w-1/2 py-6 rounded-br-2xl rounded-t-none border-none hover:!text-white hover:!bg-customSecondary bg-customSecondary text-white font-semibold"
+            >
+              {" "}
+              <EditOutlined /> Sửa
+            </Button>
           </div>
 
           <Modal
@@ -185,7 +198,9 @@ export default function ItemsList() {
               <Form.Item
                 label="Tên món ăn"
                 name="name"
-                rules={[{ required: true, message: "Vui lòng nhập tên món ăn!" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập tên món ăn!" },
+                ]}
               >
                 <Input placeholder="Nhập tên món ăn" />
               </Form.Item>
@@ -216,12 +231,8 @@ export default function ItemsList() {
               </Form.Item>
             </Form>
           </Modal>
-
-
         </div>
       ))}
-
-
 
       <Modal
         title="Thêm món ăn mới"
@@ -266,8 +277,6 @@ export default function ItemsList() {
           </Form.Item>
         </Form>
       </Modal>
-
-
     </div>
   );
 }

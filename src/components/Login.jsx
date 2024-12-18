@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logoImage from "../assets/img/Logo.jpg";
 import axios from "axios";
+import { Context } from "./shared/Context";
 
-function Login({ setIsLoggedIn }) {
+function Login() {
   const [errorVisible, setErrorVisible] = useState(false);
-
+  const { setIsLoggedIn, setIsAdmin } = useContext(Context);
   async function handleFormSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -13,10 +14,13 @@ function Login({ setIsLoggedIn }) {
       const res = await axios.get("https://localhost:7215/account/check", {
         params: data,
       });
+      console.log(res);
       if (res.status === 200) {
         setIsLoggedIn(true);
+        setIsAdmin(res.data.isAdmin);
         setErrorVisible(false); // Ensure error is not visible on success
         localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("isAdmin", res.data.isAdmin);
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   DASHBOARD_SIDEBAR_BOTTOM_LINKS,
   DASHBOARD_SIDEBAR_LINKS,
@@ -7,11 +7,13 @@ import { Link, useLocation } from "react-router";
 import classNames from "classnames";
 import { HiOutlineLogout } from "react-icons/hi";
 import logoImage from "../../assets/img/Logo.jpg";
+import { Context } from "./Context";
 
 const linkClass =
   "flex m-auto items-center gap-2 font-light w-fit p-4 hover:text-white hover:no-underline active:bg-customPrimary rounded text-base transition-all duration-500";
 
-export default function Sidebar({ setIsLoggedIn }) {
+export default function Sidebar() {
+  const { setIsLoggedIn, setIsAdmin, isAdmin } = useContext(Context);
   return (
     <div className="flex flex-col bg-customDark1 w-1/12 py-3 text-white">
       <div className="flex justify-center items-center">
@@ -30,14 +32,18 @@ export default function Sidebar({ setIsLoggedIn }) {
         ))}
       </div>
       <div className="flex flex-col items-center gap-0.5 pt-2 border-t border-neutral-700">
-        {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((link) => (
-          <SidebarLink key={link.key} link={link} />
-        ))}
+        {isAdmin
+          ? DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((link) => (
+              <SidebarLink key={link.key} link={link} />
+            ))
+          : ""}
         <div
           className={classNames(linkClass, "cursor-pointer text-red-500")}
           onClick={() => {
             setIsLoggedIn(false);
+            setIsAdmin(0);
             localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("isAdmin");
           }}
         >
           <span className="text-xl">
