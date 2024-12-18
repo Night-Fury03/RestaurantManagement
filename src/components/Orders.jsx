@@ -96,41 +96,56 @@ export default function Orders() {
   };
 
   const handleOk = () => {
-    form
-      .validateFields()
-      .then(async (values) => {
-        const totalPrice = values.billInfos.reduce((sum, item) => {
-          const product = products.find((p) => p.id === item.idFood);
-          return sum + (product?.price || 0) * (item.count || 0);
-        }, 0);
+    if (type === 'Pay') {
+      async function PayBill() {
+        await axios.post(`https://localhost:7215/Bill/${currentTable.unpaidBillId}`, {
+          headers: { "Content-Type": "application/json" },
+        });
 
-        // Thêm `totalPrice` vào dữ liệu gửi về
-        const submitData = {
-          ...values,
-          totalPrice,
-        };
-        try {
-          // Gửi dữ liệu lên server
-          await axios.post("https://localhost:7215/Bill", submitData, {
-            headers: { "Content-Type": "application/json" },
-          });
+      }
+      PayBill()
+      getTableApi();
+      getBillApi();
+      getFoodApi()
+    } else {
+      form
+        .validateFields()
+        .then(async (values) => {
+          const totalPrice = values.billInfos.reduce((sum, item) => {
+            const product = products.find((p) => p.id === item.idFood);
+            return sum + (product?.price || 0) * (item.count || 0);
+          }, 0);
 
-          // Cập nhật lại danh sách
-          await getTableApi();
-          await getBillApi();
-          await getFoodApi()
+          // Thêm `totalPrice` vào dữ liệu gửi về
+          const submitData = {
+            ...values,
+            totalPrice,
+          };
+          try {
+            // Gửi dữ liệu lên server
+            await axios.post("https://localhost:7215/Bill", submitData, {
+              headers: { "Content-Type": "application/json" },
+            });
+
+            // Cập nhật lại danh sách
+            await getTableApi();
+            await getBillApi();
+            await getFoodApi()
 
 
-          // Đóng modal và reset form
-          setIsModalOpen(false);
-          form.resetFields();
-        } catch (error) {
-          console.error("Error submitting data:", error);
-        }
-      })
-      .catch((error) => {
-        console.error("Validation failed:", error);
-      });
+            // Đóng modal và reset form
+            setIsModalOpen(false);
+            form.resetFields();
+          } catch (error) {
+            console.error("Error submitting data:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Validation failed:", error);
+        });
+
+    }
+
   };
 
   const handleCancel = () => {
@@ -216,15 +231,16 @@ export default function Orders() {
 
           <div className="flex gap-x-8 justify-end">
             <Button
+              disabled={!currentTable}
               onClick={() => showModalOption(currentTable, 'edit')}
-              className="transition-all bg-blue-500 text-white px-6 py-3 h-[50px] rounded-lg border-blue-600 border-b-[4px] hover:!bg-blue-500 hover:!border-blue-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+              className="transition-all bg-blue-500 !text-white px-6 py-3 h-[50px] rounded-lg border-blue-600 border-b-[4px] hover:!bg-blue-500 hover:!border-blue-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
             >
               Chỉnh sửa
             </Button>
             <Button className="transition-all bg-yellow-500 text-white px-6 py-3 h-[50px] rounded-lg border-yellow-600 border-b-[4px] hover:!bg-yellow-500 hover:!border-yellow-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
               Tạm tính
             </Button>
-            <Button onClick={() => showModalOption(currentTable, 'pay')} className="transition-all bg-red-500 text-white px-6 py-3 h-[50px] rounded-lg border-red-600 border-b-[4px] hover:!bg-red-500 hover:!border-red-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
+            <Button disabled={!currentTable} onClick={() => showModalOption(currentTable, 'pay')} className="transition-all bg-red-500 !text-white px-6 py-3 h-[50px] rounded-lg border-red-600 border-b-[4px] hover:!bg-red-500 hover:!border-red-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
               Thanh toán
             </Button>
           </div>
@@ -343,12 +359,6 @@ export default function Orders() {
                 </Form.List>
               </Form>
               : null
-            // <Form form={form} layout="vertical" initialValues={{ idTable: currentTable.id, totalPrice: 0 }}>
-            //   <Form.Item name="idTable" hidden>
-            //   </Form.Item>
-            //   <Form.Item name="totalPrice" hidden>
-            //   </Form.Item>
-            // </Form>
           }
 
         </Modal>

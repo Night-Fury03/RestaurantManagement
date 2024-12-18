@@ -1,47 +1,109 @@
-import React, { useState } from 'react'
-import { Modal, Form, Input, Radio, Button, Table as AntTable, Popover } from 'antd';
+import React, { useEffect, useState } from 'react'
+import { Modal, Form, Input, Radio, Button, Table as AntTable, Popover, Popconfirm } from 'antd';
 import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
+import { DeleteOutlined, EditOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
-export default function TablesList({ data }) {
+import axios from 'axios';
+
+export default function TablesList() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [typeModal, setTypeModal] = useState('')
-    const [currentTable, setCurrentTable] = useState('')
+    const [currentTable, setCurrentTable] = useState()
+    const [tables, setTables] = useState([])
 
+    const [formAdd] = Form.useForm();
+    const [formEdit] = Form.useForm();
 
-    const [form] = Form.useForm();
+    useEffect(() => {
+        getTableFoodApi();
+    }, []);
+
+    const getTableFoodApi = async () => {
+        try {
+            const response = await axios.get("https://localhost:7215/TableFood");
+            setTables(response.data);
+        } catch (error) {
+            console.error("Error fetching bills:", error);
+        }
+    };
 
     const showModal = (type, item) => {
         setTypeModal(type)
+        formEdit.setFieldsValue(item)
         setCurrentTable(item)
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
-        form.validateFields()
-            .then(values => {
-                console.log('Form values:', values);
-                setIsModalOpen(false);
-                form.resetFields();
-            })
-            .catch(error => {
-                console.error('Validation failed:', error);
-            });
+    const handleOk = (currentTable) => {
+        if (typeModal === 'add') {
+            formAdd.validateFields()
+                .then(async (values) => {
+                    console.log(values);
+                    try {
+                        await axios.post("https://localhost:7215/TableFood", values, {
+                            headers: { "Content-Type": "application/json" },
+                        });
+                        await getTableFoodApi()
+                        setIsModalOpen(false);
+                        formAdd.resetFields();
+                    } catch (error) {
+                        console.error("Error submitting data:", error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Validation failed:', error);
+                });
+        } else if (typeModal === 'edit') {
+            currentTable &&
+                formEdit.validateFields()
+                    .then(async (values) => {
+                        console.log('Form values:', values);
+                        try {
+                            await axios.put(`https://localhost:7215/TableFood/${currentTable.id}`, values, {
+                                headers: { "Content-Type": "application/json" },
+                            });
+                            await getTableFoodApi()
+                            setIsModalOpen(false);
+                            formEdit.resetFields();
+                        } catch (error) {
+                            console.error("Error submitting data:", error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Validation failed:', error);
+                    });
+        }
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
-        form.resetFields();
+        if (typeModal === 'add') {
+            formAdd.resetFields();
+        } else {
+            formEdit.resetFields();
+        }
     };
 
     return (
         <div className={`flex flex-col w-full p-4 gap-y-8`}>
             <div className='flex flex-row flex-wrap gap-7 '>
-                {data.map((item, index) => (
+                {tables.map((item, index) => (
                     <Popover
                         content={
                             <div className='flex justify-between gap-x-4'>
                                 <Button onClick={() => showModal('edit', item)} className='flex-1 text-customSecondary bg-transparent border border-customSecondary hover:!text-customSecondary hover:!border-customSecondary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegEdit /></Button>
-                                <Button onClick={() => showModal('remove', item)} className='flex-1 text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegTrashAlt /></Button>
+                                <Popconfirm
+                                    title="Bạn có chắc muốn xóa danh mục này không?"
+                                    okText="Xác nhận"
+                                    cancelText="Hủy"
+                                    onConfirm={async () => {
+                                        await axios.delete(`https://localhost:7215/TableFood/${item.id}`)
+                                        getTableFoodApi()
+                                    }}
+                                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                                >
+                                    <Button className='flex-1 text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent hover:scale-110 transition-all duration-300'><FaRegTrashAlt /></Button>
+                                </Popconfirm>
                             </div>
                         }
                         title="Tùy chọn">
@@ -65,53 +127,48 @@ export default function TablesList({ data }) {
 
 
             <Modal
-                title={typeModal === 'add' ? 'Thêm bàn' : typeModal === 'edit' ? 'Chỉnh sửa bàn' : 'Bạn có chắc chắn muốn xóa bàn này?'}
+                title={typeModal === 'add' ? 'Thêm bàn' : 'Chỉnh sửa tên bàn'}
                 open={isModalOpen}
-                onOk={handleOk}
+                onOk={() => handleOk(currentTable)}
                 onCancel={handleCancel}
                 okText='Xác nhận'
                 cancelText="Hủy"
             >
-                <Form
-                    layout="vertical"
-                    className="flex flex-col justify-between"
-                >
-                    {typeModal === 'add' ?
-                        <Form.Item
-                            label={<span className="text-sm">Tên bàn:</span>}
-                            name="tablename"
-                            rules={[{ required: true, message: 'Vui lòng nhập!' }]}
+                {
+                    typeModal === 'add' ?
+                        <Form
+                            layout="vertical"
+                            className="flex flex-col justify-between"
+                            form={formAdd}
                         >
-                            <Input
-                                placeholder="vd: 13"
-                            />
-                        </Form.Item>
-                        : typeModal === 'remove' ?
-                            <div></div>
-                            :
-                            <>
-                                <Form.Item
-                                    label={<span className="text-sm">Tên bàn hiện tại:</span>}
-                                    rules={[{ required: false }]}
-                                >
-                                    <Input
-                                        disabled
-                                        value={currentTable.name}
-                                    />
-                                </Form.Item>
+                            <Form.Item
+                                label={<span className="text-sm">Tên bàn:</span>}
+                                name="name"
+                                rules={[{ required: true, message: 'Vui lòng nhập!' }]}
+                            >
+                                <Input
+                                    placeholder="vd: 13"
+                                />
+                            </Form.Item>
+                        </Form>
+                        :
+                        <Form
+                            layout="vertical"
+                            className="flex flex-col justify-between"
+                            form={formEdit}
+                        >
+                            <Form.Item
+                                label={<span className="text-sm">Tên bàn:</span>}
+                                name="name"
+                                rules={[{ required: true, message: 'Vui lòng nhập!' }]}
+                            >
+                                <Input
+                                    placeholder="vd: 13"
+                                />
+                            </Form.Item>
+                        </Form>
+                }
 
-                                <Form.Item
-                                    label={<span className="text-sm">Tên bàn mới:</span>}
-                                    name="tablename"
-                                    rules={[{ required: true, message: 'Vui lòng nhập!' }]}
-                                >
-                                    <Input
-                                        placeholder="vd: Bàn 123"
-                                    />
-                                </Form.Item>
-                            </>
-                    }
-                </Form>
             </Modal>
 
         </div>
