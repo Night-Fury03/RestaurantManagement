@@ -20,8 +20,13 @@ const columns = [
   },
   {
     title: 'Menu',
-    dataIndex: 'menu',
+    dataIndex: 'billInfos',
     key: 'menu',
+    render: (billInfos) => (
+      <div>
+        {billInfos.map((item) => item.foodName).join(', ')}
+      </div>
+    ),
   },
   {
     title: 'Giảm giá',
@@ -38,6 +43,7 @@ const columns = [
     title: 'Ngày',
     dataIndex: 'dateCheckOut',
     key: 'dateCheckOut',
+    render: (date) => date.format("YYYY-MM-DD HH:mm"), // Định dạng ngày giờ
   },
 ];
 
@@ -48,23 +54,34 @@ export default function History() {
 
   useEffect(() => {
     async function getBillApi() {
-      let a = await axios.get("https://localhost:7215/Bill")
-      setBills(a.data)
-      console.log(a.data)
+      try {
+        let response = await axios.get("https://localhost:7215/Bill");
+        // Chuyển đổi dữ liệu để đảm bảo đúng định dạng thời gian
+        const formattedBills = response.data.map((bill) => ({
+          ...bill,
+          dateCheckOut: moment(bill.dateCheckOut), // Chuyển đổi sang moment
+        }));
+        setBills(formattedBills);
+        setFilteredData(formattedBills); // Hiển thị tất cả dữ liệu ban đầu
+        console.log(formattedBills);
+      } catch (error) {
+        console.error("Error fetching bills:", error);
+      }
     }
 
-    getBillApi()
+    getBillApi();
   }, [])
   const handleDateFilter = (dates) => {
     if (dates) {
       const [start, end] = dates;
       const filtered = bills.filter((item) =>
-        moment(item.dateCheckOut).isBetween(moment(start), moment(end), 'days', '[]')
+        item.dateCheckOut.isBetween(moment(start), moment(end), 'days', '[]')
       );
+      console.log(filtered)
       setFilteredData(filtered);
       setDateRange(dates);
     } else {
-      setFilteredData(bills);
+      setFilteredData(bills); // Hiển thị lại toàn bộ dữ liệu khi không chọn ngày
       setDateRange(null);
     }
   };
@@ -80,7 +97,7 @@ export default function History() {
             <h2 className="text-xl font-semibold">Danh Sách Bills</h2>
             <RangePicker
               onChange={handleDateFilter}
-              format="YYYY-MM-DD"
+              format="YYYY-MM-DD HH:mm"
               placeholder={['Bắt đầu', 'Kết thúc']}
               value={dateRange}
             />

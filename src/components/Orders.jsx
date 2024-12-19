@@ -14,13 +14,6 @@ import axios from "axios";
 
 const { Option } = Select;
 
-const dishesList = [
-  { id: 1, name: "Cơm gà", quantity: 1, price: 50000 },
-  { id: 2, name: "Phở bò", quantity: 2, price: 40000 },
-  { id: 3, name: "Bún chả", quantity: 3, price: 45000 },
-  { id: 4, name: "Trà sữa", quantity: 4, price: 30000 },
-];
-
 export default function Orders() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [total, setTotal] = useState(0);
@@ -62,6 +55,20 @@ export default function Orders() {
     }
   };
 
+  const patchBillApi = async (bill) => {
+    try {
+      await axios.patch(`https://localhost:7215/Bill/${bill.id}/checkout`, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      getTableApi();
+      getBillApi();
+      getFoodApi()
+    } catch (error) {
+      console.error("Error fetching bills:", error);
+    }
+  };
+
   useEffect(() => {
     getFoodApi()
     getTableApi();
@@ -80,6 +87,7 @@ export default function Orders() {
       }
       getUnpaidbillApi()
     } else if (table.status === "Chưa hoạt động") {
+      setType('')
       setIsModalOpen(true);
       setTotal(0);
     }
@@ -96,17 +104,11 @@ export default function Orders() {
   };
 
   const handleOk = () => {
-    if (type === 'Pay') {
-      async function PayBill() {
-        await axios.post(`https://localhost:7215/Bill/${currentTable.unpaidBillId}`, {
-          headers: { "Content-Type": "application/json" },
-        });
-
-      }
-      PayBill()
-      getTableApi();
-      getBillApi();
-      getFoodApi()
+    if (type === 'pay') {
+      patchBillApi(unpaidbill)
+      setIsModalOpen(false);
+      setUnpaidbill({})
+      setCurrentTable(null)
     } else {
       form
         .validateFields()
@@ -237,10 +239,10 @@ export default function Orders() {
             >
               Chỉnh sửa
             </Button>
-            <Button className="transition-all bg-yellow-500 text-white px-6 py-3 h-[50px] rounded-lg border-yellow-600 border-b-[4px] hover:!bg-yellow-500 hover:!border-yellow-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
-              Tạm tính
-            </Button>
-            <Button disabled={!currentTable} onClick={() => showModalOption(currentTable, 'pay')} className="transition-all bg-red-500 !text-white px-6 py-3 h-[50px] rounded-lg border-red-600 border-b-[4px] hover:!bg-red-500 hover:!border-red-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
+            <Button
+              disabled={!currentTable}
+              onClick={() => showModalOption(currentTable, 'pay')}
+              className="transition-all bg-red-500 !text-white px-6 py-3 h-[50px] rounded-lg border-red-600 border-b-[4px] hover:!bg-red-500 hover:!border-red-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
               Thanh toán
             </Button>
           </div>

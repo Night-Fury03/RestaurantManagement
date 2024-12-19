@@ -1,13 +1,14 @@
+// src/components/BarChart.js
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 
 // Đăng ký các thành phần của Chart.js
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function LineChart() {
-    const month = [7, 8, 9, 10, 11]
+export default function BarChart() {
+    const year = [2023, 2024]
     const [revenues, setRevenues] = useState([]);
 
     useEffect(() => {
@@ -15,7 +16,7 @@ export default function LineChart() {
         const fetchRevenues = async () => {
             try {
                 const results = await Promise.all(
-                    month.map((item) => getTotalRevuneApi(item))
+                    year.map((item) => getTotalRevuneApi(item))
                 );
                 setRevenues(results); // Cập nhật toàn bộ mảng revenues cùng lúc
             } catch (error) {
@@ -26,48 +27,45 @@ export default function LineChart() {
         fetchRevenues();
     }, []);
 
-    const getTotalRevuneApi = async (month) => {
+    const getTotalRevuneApi = async (year) => {
         try {
-            const response = await axios.get(`https://localhost:7215/TotalRevenue?month=${month}&year=2024`);
+            const response = await axios.get(`https://localhost:7215/TotalRevenue/${year}`);
             return response.data;
         } catch (error) {
-            console.error(`Error fetching revenue for month ${month}:`, error);
+            console.error(`Error fetching revenue for month ${year}:`, error);
             return null; // Trả về null nếu có lỗi
         }
     };
 
-    // Dữ liệu
+    // Dữ liệu cho biểu đồ
     const data = {
-        labels: ['2024/7', '2024/8', '2024/9', '2024/10', '2024/11'],
+        labels: ['2023', '2024'], // Các năm
         datasets: [
             {
-                label: 'Tổng doanh thu',
-                data: revenues,
-                borderColor: '#9288E0',
-                backgroundColor: 'rgba(25, 121, 201, 0.3)',
-                tension: 0.4, // Bo góc đường biểu đồ
-                pointRadius: 5, // Kích thước điểm
+                label: 'Tổng doanh thu (triệu USD)',
+                data: revenues, // Doanh thu từng năm
+                backgroundColor: 'rgba(107, 226, 190, 0.24)', // Màu thanh
+                borderColor: '#50D1AA', // Màu viền
+                borderWidth: 1,
             },
         ],
     };
 
-    // Tùy chọn biểu đồ
+    // Tùy chọn cho biểu đồ
     const options = {
         responsive: true,
-        // maintainAspectRatio: true,
-        // aspectRatio: 4,
         plugins: {
             legend: {
-                display: false,
+                position: 'top', // Vị trí của chú thích
             },
             title: {
                 display: true,
-                text: 'Tổng doanh thu tháng',
+                text: 'Tổng doanh thu theo năm', // Tiêu đề biểu đồ
                 font: {
                     size: 24, // Kích thước font
                 },
                 color: '#fff'
-            }
+            },
         },
         scales: {
             x: {
@@ -90,9 +88,9 @@ export default function LineChart() {
                         size: 10,
                     },
                     maxTicksLimit: 5, // Hiển thị tối đa 5 mốc
-                    stepSize: 40000000,
+                    stepSize: 10,
                     callback: (value) => {
-                        return `${value}đ`; // Thêm chữ "đ" vào giá trị
+                        return `${value}đ`; // Thêm chữ "units" vào giá trị
                     },
                 },
                 beginAtZero: true, // Bắt đầu từ 0
@@ -100,5 +98,6 @@ export default function LineChart() {
         },
     };
 
-    return <Line data={data} options={options} />;
-}
+    return <Bar data={data} options={options} />;
+};
+

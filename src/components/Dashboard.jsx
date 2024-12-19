@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./shared/Header";
 import LineChart from "./shared/LineChart";
+import BarChart from "./shared/BarChart";
 import { Dropdown, Menu, Table, DatePicker, Button } from "antd";
 import { DownloadOutlined, DownOutlined } from "@ant-design/icons";
 import moment from "moment";
@@ -80,8 +81,6 @@ const initialData = [
 export default function Dashboard() {
   const [filteredData, setFilteredData] = useState(initialData);
   const [dateRange, setDateRange] = useState(null);
-  const textData = [1, 2, 3, 4, 5, 6, 7, 7, 77, 7, , 7, 7, 7, 77];
-  const [filter, setFilter] = useState("Tất cả");
 
   const handleDateFilter = (dates) => {
     if (dates) {
@@ -96,20 +95,6 @@ export default function Dashboard() {
       setDateRange(null);
     }
   };
-
-  const mostOrderedFilter = (filterSetter) => (
-    <Menu
-      className="min-w-24"
-      onClick={({ key }) => {
-        filterSetter(key);
-      }}
-      items={[
-        { key: "Tất cả", label: "Tất cả" },
-        { key: "Đồ ăn", label: "Đồ ăn" },
-        { key: "Thức uống", label: "Thức uống" },
-      ]}
-    />
-  );
 
   return (
     <div className="flex h-full">
@@ -138,23 +123,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 rounded-lg bg-customDark1 p-4">
-            <div className="flex mb-4 text-white justify-between items-center">
-              <h2 className="text-xl font-semibold">Danh Sách Bills</h2>
-              <RangePicker
-                onChange={handleDateFilter}
-                format="YYYY-MM-DD"
-                placeholder={["Bắt đầu", "Kết thúc"]}
-                value={dateRange}
-              />
-            </div>
-
-            <Table
-              columns={columns}
-              dataSource={filteredData}
-              bordered
-              pagination={{ pageSize: 5 }}
-              scroll={{ y: "300px" }} // Enable dynamic scrolling
-            />
+            <BarChart />
           </div>
         </div>
       </div>
@@ -164,36 +133,12 @@ export default function Dashboard() {
         <div className="flex flex-col justify-between gap-y-4 p-4 bg-customDark1 rounded-lg h-[100%]">
           <div className="flex justify-between items-center w-full pb-2 border-b border-customDarkLine">
             <h1 className="text-white">Bán chạy nhất</h1>
-            <Dropdown
-              overlay={mostOrderedFilter(setFilter)}
-              trigger={["click"]}
-              placement="bottomRight"
-            >
-              <Button className="border border-customDarkLine bg-customDark1 hover:!bg-transparent  text-white">
-                {filter} <DownOutlined />
-              </Button>
-            </Dropdown>
           </div>
 
           <div className="flex-1 overflow-y-scroll scrollbar-none">
-            <MostOrderedList data={textData} />
+            <MostOrderedList />
           </div>
-
-          <Button className="w-full text-customPrimary bg-transparent border border-customPrimary hover:!bg-transparent transition-all duration-300">
-            xem tất cả
-          </Button>
         </div>
-
-        {/* <div className='rounded-lg bg-customDark1'>
-          <div className='flex justify-between items-center w-full border-b border-customDarkLine p-4'>
-            <h1 className='text-white'>Tỷ lệ đơn hàng theo loại</h1>
-            <DatePicker onChange={onChange} needConfirm />
-          </div>
-
-          <div className="" style={{ width: "200px", margin: "0 auto" }}>
-            <PieChart />
-          </div>
-        </div> */}
       </div>
     </div>
   );
