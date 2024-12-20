@@ -57,7 +57,7 @@
 }
 
 .custom-tabs .ant-tabs-content-holder {
-	@apply bg-customDark1 rounded-lg border-none;
+	@apply bg-customDark1 rounded-lg border-none overflow-y-scroll scrollbar-none;
 }
 
 .custom-tabs .ant-tabs-content-holder .ant-tabs-content {

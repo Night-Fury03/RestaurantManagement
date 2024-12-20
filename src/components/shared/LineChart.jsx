@@ -7,7 +7,7 @@ import axios from 'axios';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default function LineChart() {
-    const month = [7, 8, 9, 10, 11]
+    const month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     const [revenues, setRevenues] = useState([]);
 
     useEffect(() => {
@@ -38,7 +38,7 @@ export default function LineChart() {
 
     // Dữ liệu
     const data = {
-        labels: ['2024/7', '2024/8', '2024/9', '2024/10', '2024/11'],
+        labels: ['2024/1', '2024/2', '2024/3', '2024/4', '2024/5', '2024/6', '2024/7', '2024/8', '2024/9', '2024/10', '2024/11'],
         datasets: [
             {
                 label: 'Tổng doanh thu',

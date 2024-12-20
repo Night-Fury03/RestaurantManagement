@@ -207,129 +207,131 @@ export default function Setting() {
       <div className="flex flex-col flex-1 mx-4 mt-4">
         <Header title={"Settings"} />
 
-        <Tabs
-          tabPosition="left"
-          defaultActiveKey="1"
-          type="card"
-          className="custom-tabs flex-1 py-4 h-full gap-x-4"
-        >
-          <Tabs.TabPane
-            tab="Quản lí tài khoản"
-            key="1"
-            className="h-full pr-4 flex flex-col gap-y-6"
+        <div className="flex-1 overflow-y-scroll scrollbar-none">
+          <Tabs
+            tabPosition="left"
+            defaultActiveKey="1"
+            type="card"
+            className="custom-tabs flex-1 py-4 h-full gap-x-4"
           >
-            <h1 className="text-white text-2xl font-semibold pt-4">
-              Quản lí tài khoản
-            </h1>
-
-            <Table
-              columns={[
-                {
-                  title: "Tên tài khoản",
-                  dataIndex: "userName",
-                  key: "userName",
-                  width: "20%",
-                },
-                {
-                  title: "Tên đại diện",
-                  dataIndex: "displayName",
-                  key: "displayName",
-                  width: "30%",
-                },
-                {
-                  title: "Mật khẩu",
-                  dataIndex: "passWord",
-                  key: "passWord",
-                  width: "45%",
-                },
-                {
-                  key: "action",
-                  width: "5%",
-                  render: (item, record) => (
-                    <div className="flex gap-x-2">
-                      <Button
-                        onClick={() => showModalEditAcc(item)}
-                        type="text"
-                        icon={<EditOutlined />}
-                        className="hover:!bg-customSecondary hover:!text-white "
-                      />
-
-                      <Popconfirm
-                        title="Bạn có chắc muốn xóa danh mục này không?"
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                        onConfirm={async () => {
-                          await axios.delete(
-                            `https://localhost:7215/Account/${record.userName}`
-                          );
-                          getAccApi();
-                        }}
-                        icon={
-                          <QuestionCircleOutlined style={{ color: "red" }} />
-                        }
-                      >
-                        <Button
-                          type="text"
-                          danger
-                          icon={<DeleteOutlined />}
-                          className="hover:!bg-red-500 hover:!text-white "
-                        />
-                      </Popconfirm>
-                    </div>
-                  ),
-                },
-              ]}
-              dataSource={accList.map((item) => ({
-                ...item,
-                key: item.userName,
-              }))}
-              bordered
-              pagination={{ pageSize: 5 }}
-            />
-
-            <div className="flex justify-end items-center mb-2">
-              <Button
-                onClick={() => showModal("addAccount")}
-                className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
-              >
-                Thêm tài khoản mới
-              </Button>
-            </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab="Quản lí thực đơn"
-            key="2"
-            className="h-full pr-4 flex flex-col gap-y-6"
-          >
-            <div className="flex justify-between items-center mt-2 pr-4">
-              <h1 className="text-white text-2xl font-semibold">
-                Quản lý sản phẩm
+            <Tabs.TabPane
+              tab="Quản lí tài khoản"
+              key="1"
+              className="h-full pr-4 flex flex-col gap-y-6"
+            >
+              <h1 className="text-white text-2xl font-semibold pt-4">
+                Quản lí tài khoản
               </h1>
-            </div>
 
-            <ItemsList />
+              <Table
+                columns={[
+                  {
+                    title: "Tên tài khoản",
+                    dataIndex: "userName",
+                    key: "userName",
+                    width: "20%",
+                  },
+                  {
+                    title: "Tên đại diện",
+                    dataIndex: "displayName",
+                    key: "displayName",
+                    width: "30%",
+                  },
+                  {
+                    title: "Mật khẩu",
+                    dataIndex: "passWord",
+                    key: "passWord",
+                    width: "45%",
+                  },
+                  {
+                    key: "action",
+                    width: "5%",
+                    render: (item, record) => (
+                      <div className="flex gap-x-2">
+                        <Button
+                          onClick={() => showModalEditAcc(item)}
+                          type="text"
+                          icon={<EditOutlined />}
+                          className="hover:!bg-customSecondary hover:!text-white "
+                        />
 
-            <div className="flex justify-end items-center mb-2">
-              <Button
-                onClick={() => showModal("editCategory")}
-                className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
-              >
-                Tùy chỉnh phân loại
-              </Button>
-            </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab="Quản lí bàn"
-            key="3"
-            className="h-full pr-4 flex flex-col gap-y-6"
-          >
-            <div className="flex justify-between items-center mt-2 pr-4">
-              <h1 className="text-white text-2xl font-semibold">Quản lý bàn</h1>
-            </div>
+                        <Popconfirm
+                          title="Bạn có chắc muốn xóa danh mục này không?"
+                          okText="Xác nhận"
+                          cancelText="Hủy"
+                          onConfirm={async () => {
+                            await axios.delete(
+                              `https://localhost:7215/Account/${record.userName}`
+                            );
+                            getAccApi();
+                          }}
+                          icon={
+                            <QuestionCircleOutlined style={{ color: "red" }} />
+                          }
+                        >
+                          <Button
+                            type="text"
+                            danger
+                            icon={<DeleteOutlined />}
+                            className="hover:!bg-red-500 hover:!text-white "
+                          />
+                        </Popconfirm>
+                      </div>
+                    ),
+                  },
+                ]}
+                dataSource={accList.map((item) => ({
+                  ...item,
+                  key: item.userName,
+                }))}
+                bordered
+                pagination={{ pageSize: 5 }}
+              />
 
-            <TablesList />
-          </Tabs.TabPane>
-        </Tabs>
+              <div className="flex justify-end items-center mb-2">
+                <Button
+                  onClick={() => showModal("addAccount")}
+                  className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+                >
+                  Thêm tài khoản mới
+                </Button>
+              </div>
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab="Quản lí thực đơn"
+              key="2"
+              className="h-full pr-4 flex flex-col gap-y-6"
+            >
+              <div className="flex justify-between items-center mt-2 pr-4">
+                <h1 className="text-white text-2xl font-semibold">
+                  Quản lý sản phẩm
+                </h1>
+              </div>
+
+              <ItemsList />
+
+              <div className="flex justify-end items-center mb-2">
+                <Button
+                  onClick={() => showModal("editCategory")}
+                  className="transition-all bg-red-400 text-white h-[50px] rounded-lg border-red-500 border-b-[4px] hover:!bg-red-400 hover:!border-red-500 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+                >
+                  Tùy chỉnh phân loại
+                </Button>
+              </div>
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab="Quản lí bàn"
+              key="3"
+              className="h-full pr-4 flex flex-col gap-y-6"
+            >
+              <div className="flex justify-between items-center mt-2 pr-4">
+                <h1 className="text-white text-2xl font-semibold">Quản lý bàn</h1>
+              </div>
+
+              <TablesList />
+            </Tabs.TabPane>
+          </Tabs>
+        </div>
       </div>
 
       {/* modal them acc */}

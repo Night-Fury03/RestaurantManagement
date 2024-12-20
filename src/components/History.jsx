@@ -43,7 +43,10 @@ const columns = [
     title: 'Ngày',
     dataIndex: 'dateCheckOut',
     key: 'dateCheckOut',
-    render: (date) => date.format("YYYY-MM-DD HH:mm"), // Định dạng ngày giờ
+    render: (date) => {
+      const formattedDate = moment(date).isValid() ? moment(date).format("YYYY-MM-DD") : "Invalid Date";
+      return formattedDate;
+    },
   },
 ];
 
@@ -73,15 +76,16 @@ export default function History() {
   }, [])
   const handleDateFilter = (dates) => {
     if (dates) {
-      const [start, end] = dates;
-      const filtered = bills.filter((item) =>
-        item.dateCheckOut.isBetween(moment(start), moment(end), 'days', '[]')
-      );
-      console.log(filtered)
+      const [start, end] = dates.map((date) => new Date(date).getTime()); // Chuyển sang timestamp
+      const filtered = bills.filter((item) => {
+        const itemDate = new Date(item.dateCheckOut).getTime(); // Chuyển `dateCheckOut` sang timestamp
+        return itemDate >= start && itemDate <= end; // So sánh trực tiếp
+      });
+      console.log("Filtered Data:", filtered);
       setFilteredData(filtered);
       setDateRange(dates);
     } else {
-      setFilteredData(bills); // Hiển thị lại toàn bộ dữ liệu khi không chọn ngày
+      setFilteredData(bills);
       setDateRange(null);
     }
   };
@@ -97,7 +101,7 @@ export default function History() {
             <h2 className="text-xl font-semibold">Danh Sách Bills</h2>
             <RangePicker
               onChange={handleDateFilter}
-              format="YYYY-MM-DD HH:mm"
+              format="YYYY-MM-DD"
               placeholder={['Bắt đầu', 'Kết thúc']}
               value={dateRange}
             />

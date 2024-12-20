@@ -7,7 +7,6 @@ import {
   Button,
   InputNumber,
   Table as AntTable,
-  Input,
 } from "antd";
 import clsx from "clsx";
 import axios from "axios";
@@ -26,6 +25,7 @@ export default function Orders() {
   const [type, setType] = useState('')
 
   const [form] = Form.useForm();
+  const [formEdit] = Form.useForm();
 
   const getTableApi = async () => {
     try {
@@ -109,6 +109,41 @@ export default function Orders() {
       setIsModalOpen(false);
       setUnpaidbill({})
       setCurrentTable(null)
+    } else if (type === 'edit') {
+      formEdit
+        .validateFields()
+        .then(async (values) => {
+          const totalPrice = values.billInfos.reduce((sum, item) => {
+            const product = products.find((p) => p.id === item.idFood);
+            return sum + (product?.price || 0) * (item.count || 0);
+          }, 0) + unpaidbill.totalPrice;
+
+          // Thêm `totalPrice` vào dữ liệu gửi về
+          const submitData = {
+            ...values,
+            totalPrice,
+          };
+          try {
+            // Gửi dữ liệu lên server
+            await axios.patch(`https://localhost:7215/Bill/${unpaidbill.id}/edit`, submitData, {
+              headers: { "Content-Type": "application/json" },
+            });
+
+            // Cập nhật lại danh sách
+            await getTableApi();
+            await getBillApi();
+            await getFoodApi()
+
+            // Đóng modal và reset form
+            setIsModalOpen(false);
+            formEdit.resetFields();
+          } catch (error) {
+            console.error("Error submitting data:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Validation failed:", error);
+        });
     } else {
       form
         .validateFields()
@@ -145,7 +180,6 @@ export default function Orders() {
         .catch((error) => {
           console.error("Validation failed:", error);
         });
-
     }
 
   };
@@ -209,7 +243,7 @@ export default function Orders() {
                 <p>
                   {currentTable?.status === "Chưa hoạt động"
                     ? "Chưa hoạt động"
-                    : unpaidbill?.dateCheckIn?.split("T")[1] || ""}
+                    : unpaidbill?.dateCheckIn?.split("T")[1].split(".")[0] || ""}
                 </p>
               </span>
             </div>
@@ -233,14 +267,14 @@ export default function Orders() {
 
           <div className="flex gap-x-8 justify-end">
             <Button
-              disabled={!currentTable}
+              disabled={currentTable?.status === 'Chưa hoạt động' || null && !currentTable}
               onClick={() => showModalOption(currentTable, 'edit')}
               className="transition-all bg-blue-500 !text-white px-6 py-3 h-[50px] rounded-lg border-blue-600 border-b-[4px] hover:!bg-blue-500 hover:!border-blue-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
             >
               Chỉnh sửa
             </Button>
             <Button
-              disabled={!currentTable}
+              disabled={currentTable?.status === 'Chưa hoạt động' || null && !currentTable}
               onClick={() => showModalOption(currentTable, 'pay')}
               className="transition-all bg-red-500 !text-white px-6 py-3 h-[50px] rounded-lg border-red-600 border-b-[4px] hover:!bg-red-500 hover:!border-red-600 hover:!text-white hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
               Thanh toán
@@ -301,7 +335,7 @@ export default function Orders() {
 
           {/* Form thêm nhiều món */}
           {
-            type !== 'pay' ?
+            type === '' ?
               <Form form={form} layout="vertical" initialValues={{ idTable: currentTable.id, totalPrice: 0 }}>
                 <Form.Item name="idTable" hidden>
                 </Form.Item>
@@ -360,7 +394,62 @@ export default function Orders() {
                   )}
                 </Form.List>
               </Form>
-              : null
+              : type === 'edit' ?
+                <Form form={formEdit} layout="vertical">
+                  <Form.List name="billInfos">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map(({ key, name, fieldKey, ...restField }) => (
+                          <div key={key} className="flex items-center gap-x-4">
+                            <Form.Item
+                              {...restField}
+                              name={[name, "idFood"]}
+                              fieldKey={[fieldKey, "idFood"]}
+                              rules={[
+                                { required: true, message: "Vui lòng chọn món!" },
+                              ]}
+                            >
+                              <Select placeholder="Chọn món" style={{ width: 300 }}>
+                                {products.map((dish) => (
+                                  <Option key={dish.id} value={dish.id}>
+                                    {dish.name} - {dish.price} đ
+                                  </Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              {...restField}
+                              name={[name, "count"]}
+                              fieldKey={[fieldKey, "count"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập số lượng!",
+                                },
+                              ]}
+                            >
+                              <InputNumber min={1} placeholder="Số lượng" />
+                            </Form.Item>
+                            <Button
+                              className="mb-6"
+                              type="link"
+                              danger
+                              onClick={() => remove(name)}
+                            >
+                              Xóa
+                            </Button>
+                          </div>
+                        ))}
+                        <Form.Item>
+                          <Button type="dashed" onClick={() => add()} block>
+                            Thêm món
+                          </Button>
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
+                </Form>
+                : null
           }
 
         </Modal>
