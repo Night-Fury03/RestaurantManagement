@@ -7,25 +7,25 @@ import MostOrderedList from "./shared/MostOrderedList";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-const exportToPDF = async () => {
-  const content = document.getElementById('dashboard-content'); // Lấy DOM cần in
-  if (content) {
-    const canvas = await html2canvas(content, { scale: 2 }); // Chụp ảnh DOM, scale tăng chất lượng
-    const imgData = canvas.toDataURL('image/png'); // Chuyển thành ảnh PNG
+// const exportToPDF = async () => {
+//   const content = document.getElementById('dashboard-content'); // Lấy DOM cần in
+//   if (content) {
+//     const canvas = await html2canvas(content, { scale: 2 }); // Chụp ảnh DOM, scale tăng chất lượng
+//     const imgData = canvas.toDataURL('image/png'); // Chuyển thành ảnh PNG
 
-    const pdf = new jsPDF('p', 'mm', 'a4'); // Tạo PDF khổ A4
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+//     const pdf = new jsPDF('p', 'mm', 'a4'); // Tạo PDF khổ A4
+//     const pageWidth = pdf.internal.pageSize.getWidth();
+//     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Tỉ lệ ảnh
+//     const imgWidth = pageWidth;
+//     const imgHeight = (canvas.height * imgWidth) / canvas.width; // Tỉ lệ ảnh
 
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Thêm ảnh vào PDF
-    pdf.save('dashboard-report.pdf'); // Lưu file PDF
-  } else {
-    console.error('Không tìm thấy nội dung cần in!');
-  }
-}
+//     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Thêm ảnh vào PDF
+//     pdf.save('dashboard-report.pdf'); // Lưu file PDF
+//   } else {
+//     console.error('Không tìm thấy nội dung cần in!');
+//   }
+// }
 
 export default function Dashboard() {
 
@@ -35,7 +35,7 @@ export default function Dashboard() {
       <div className="relative flex flex-col flex-1 ml-4">
         <Header title={"Dashboard"} />
 
-        <div className="absolute right-0 top-4">
+        {/* <div className="absolute right-0 top-4">
           <button onClick={exportToPDF} className="relative flex items-center px-4 py-2 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group">
             <span className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4">
               <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
@@ -48,9 +48,9 @@ export default function Dashboard() {
               <DownloadOutlined /> In báo cáo
             </span>
           </button>
-        </div>
+        </div> */}
 
-        <div id="dashboard-content" className="flex flex-col flex-1 pt-6 gap-y-6 overflow-y-auto scrollbar-none">
+        <div className="flex flex-col flex-1 pt-6 gap-y-6 overflow-y-auto scrollbar-none">
           <div className="rounded-lg bg-customDark1 p-4">
             <LineChart />
           </div>

@@ -113,7 +113,8 @@ export default function Orders() {
       formEdit
         .validateFields()
         .then(async (values) => {
-          const totalPrice = values.billInfos.reduce((sum, item) => {
+          console.log(values)
+          const totalPrice = values.editList.reduce((sum, item) => {
             const product = products.find((p) => p.id === item.idFood);
             return sum + (product?.price || 0) * (item.count || 0);
           }, 0) + unpaidbill.totalPrice;
@@ -396,7 +397,7 @@ export default function Orders() {
               </Form>
               : type === 'edit' ?
                 <Form form={formEdit} layout="vertical">
-                  <Form.List name="billInfos">
+                  <Form.List name="editList">
                     {(fields, { add, remove }) => (
                       <>
                         {fields.map(({ key, name, fieldKey, ...restField }) => (
