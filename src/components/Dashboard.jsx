@@ -4,8 +4,6 @@ import LineChart from "./shared/LineChart";
 import BarChart from "./shared/BarChart";
 import { DownloadOutlined } from "@ant-design/icons";
 import MostOrderedList from "./shared/MostOrderedList";
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 // const exportToPDF = async () => {
 //   const content = document.getElementById('dashboard-content'); // Lấy DOM cần in
