@@ -1,100 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "./shared/Header";
 import LineChart from "./shared/LineChart";
 import BarChart from "./shared/BarChart";
-import { Dropdown, Menu, Table, DatePicker, Button } from "antd";
-import { DownloadOutlined, DownOutlined } from "@ant-design/icons";
-import moment from "moment";
+import { DownloadOutlined } from "@ant-design/icons";
 import MostOrderedList from "./shared/MostOrderedList";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
-const { RangePicker } = DatePicker;
+const exportToPDF = async () => {
+  const content = document.getElementById('dashboard-content'); // Lấy DOM cần in
+  if (content) {
+    const canvas = await html2canvas(content, { scale: 2 }); // Chụp ảnh DOM, scale tăng chất lượng
+    const imgData = canvas.toDataURL('image/png'); // Chuyển thành ảnh PNG
 
-const columns = [
-  {
-    title: "Mã Bill",
-    dataIndex: "billId",
-    key: "billId",
-  },
-  {
-    title: "Menu",
-    dataIndex: "menu",
-    key: "menu",
-  },
-  {
-    title: "Tổng Giá ($)",
-    dataIndex: "totalPrice",
-    key: "totalPrice",
-    sorter: (a, b) => a.totalPrice - b.totalPrice, // Sort by total price
-  },
-  {
-    title: "Ngày",
-    dataIndex: "date",
-    key: "date",
-  },
-];
+    const pdf = new jsPDF('p', 'mm', 'a4'); // Tạo PDF khổ A4
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-const initialData = [
-  {
-    key: "1",
-    billId: "B001",
-    menu: "Pizza, Coke",
-    totalPrice: 25,
-    date: "2023-12-01",
-  },
-  {
-    key: "2",
-    billId: "B002",
-    menu: "Burger, Fries, Sprite",
-    totalPrice: 30,
-    date: "2023-12-02",
-  },
-  {
-    key: "3",
-    billId: "B003",
-    menu: "Pasta, Water",
-    totalPrice: 20,
-    date: "2023-12-03",
-  },
-  {
-    key: "4",
-    billId: "B004",
-    menu: "Steak, Wine",
-    totalPrice: 50,
-    date: "2023-12-04",
-  },
-  {
-    key: "5",
-    billId: "B005",
-    menu: "Steak, Wine",
-    totalPrice: 50,
-    date: "2023-12-04",
-  },
-  {
-    key: "6",
-    billId: "B006",
-    menu: "Steak, Wine",
-    totalPrice: 50,
-    date: "2023-12-04",
-  },
-];
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Tỉ lệ ảnh
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Thêm ảnh vào PDF
+    pdf.save('dashboard-report.pdf'); // Lưu file PDF
+  } else {
+    console.error('Không tìm thấy nội dung cần in!');
+  }
+}
 
 export default function Dashboard() {
-  const [filteredData, setFilteredData] = useState(initialData);
-  const [dateRange, setDateRange] = useState(null);
-
-  const handleDateFilter = (dates) => {
-    if (dates) {
-      const [start, end] = dates;
-      const filtered = initialData.filter((item) =>
-        moment(item.date).isBetween(moment(start), moment(end), "days", "[]")
-      );
-      setFilteredData(filtered);
-      setDateRange(dates);
-    } else {
-      setFilteredData(initialData);
-      setDateRange(null);
-    }
-  };
 
   return (
     <div className="flex h-full">
@@ -103,7 +36,7 @@ export default function Dashboard() {
         <Header title={"Dashboard"} />
 
         <div className="absolute right-0 top-4">
-          <button className="relative flex items-center px-4 py-2 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group">
+          <button onClick={exportToPDF} className="relative flex items-center px-4 py-2 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group">
             <span className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4">
               <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
             </span>
@@ -117,7 +50,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="flex flex-col flex-1 pt-6 gap-y-6 overflow-y-auto scrollbar-none">
+        <div id="dashboard-content" className="flex flex-col flex-1 pt-6 gap-y-6 overflow-y-auto scrollbar-none">
           <div className="rounded-lg bg-customDark1 p-4">
             <LineChart />
           </div>
